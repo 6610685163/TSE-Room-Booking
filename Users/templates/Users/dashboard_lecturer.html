@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - ระบบจองห้อง มธ.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --tu-red: #c21e2d;
+            --tu-red-hover: #a01825;
+            --text-main: #374151;
+            --text-muted: #6b7280;
+            --bg-color: #f3f4f6;
+            --border-color: #d1d5db;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+        }
+
+        .navbar {
+            background-color: var(--tu-red);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .navbar-right {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .user-info {
+            text-align: right;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Sarabun', sans-serif;
+            transition: background-color 0.2s;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .card h2 {
+            color: var(--tu-red);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--tu-red);
+            padding-bottom: 0.5rem;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--tu-red);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            border: none;
+            cursor: pointer;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background-color: var(--tu-red-hover);
+        }
+
+        .alert {
+            background-color: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            color: #1e40af;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .feature-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--tu-red);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>TSE Room Booking System</h1>
+        <div class="navbar-right">
+            <div class="user-info">
+                <div>{{ user.first_name|default:user.username }}</div>
+                <small>{{ user_role }}</small>
+            </div>
+            <form method="post" action="{% url 'logout' %}" style="margin: 0;">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">ออกจากระบบ</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="alert">
+            <strong>ยินดีต้อนรับ!</strong> คุณได้เข้าสู่ระบบสำเร็จแล้ว
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="card">
+                <h2>📅 จองห้อง</h2>
+                <p>สร้างการจองห้องประชุมหรือห้องเรียนใหม่</p>
+                <ul class="feature-list">
+                    <li>เลือกห้องที่ต้องการ</li>
+                    <li>กำหนดวันเวลาที่ต้องใช้</li>
+                    <li>ระบุวัตถุประสงค์การใช้งาน</li>
+                </ul>
+                <a href="#" class="btn">จองห้องใหม่</a>
+            </div>
+
+            <div class="card">
+                <h2>📋 การจองของฉัน</h2>
+                <p>ดูรายการจองและสถานะการอนุมัติ</p>
+                <ul class="feature-list">
+                    <li>ดูรายการจองทั้งหมด</li>
+                    <li>ยกเลิกการจองที่ยังไม่ใช้</li>
+                    <li>ตรวจสอบสถานะการอนุมัติ</li>
+                </ul>
+                <a href="#" class="btn">ดูรายการของฉัน</a>
+            </div>
+
+            <div class="card">
+                <h2>📅 ปฏิทินห้อง</h2>
+                <p>ดูความว่างของห้องแต่ละห้อง</p>
+                <ul class="feature-list">
+                    <li>ดูปฏิทินรายสัปดาห์/รายเดือน</li>
+                    <li>กรองตามห้อง</li>
+                    <li>เลือกเวลาว่าง</li>
+                </ul>
+                <a href="#" class="btn">ดูปฏิทิน</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

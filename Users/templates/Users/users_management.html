@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - ระบบจองห้อง มธ.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --tu-red: #c21e2d;
+            --tu-red-hover: #a01825;
+            --text-main: #374151;
+            --text-muted: #6b7280;
+            --bg-color: #f3f4f6;
+            --border-color: #d1d5db;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+        }
+
+        .navbar {
+            background-color: var(--tu-red);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+
+        .navbar a:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h2 {
+            color: var(--tu-red);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--tu-red);
+            padding-bottom: 0.5rem;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        thead {
+            background-color: var(--bg-color);
+            border-bottom: 2px solid var(--tu-red);
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--tu-red);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        tbody tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .role-lecturer {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .role-admin {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .status-active {
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        .status-inactive {
+            color: #b91c1c;
+            font-weight: 600;
+        }
+
+        .action-links {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-family: 'Sarabun', sans-serif;
+            transition: background-color 0.2s;
+        }
+
+        .btn-edit {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background-color: #2563eb;
+        }
+
+        .alert {
+            background-color: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            color: #1e40af;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state p {
+            font-size: 1rem;
+            margin: 0.5rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>{{ title }}</h1>
+        <a href="{% url 'dashboard' %}">กลับไปแดชบอร์ด</a>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2>รายชื่อผู้ใช้งานทั้งหมด</h2>
+
+            <div class="alert">
+                <strong>หลักการจัดการบทบาท:</strong> เลือกบทบาทสำหรับผู้ใช้งานเพื่อกำหนดสิทธิ์ที่เหมาะสม
+            </div>
+
+            {% if users %}
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ชื่อผู้ใช้งาน</th>
+                            <th>ชื่อจริง</th>
+                            <th>อีเมล</th>
+                            <th>บทบาท</th>
+                            <th>สถานะ</th>
+                            <th>จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user_profile in users %}
+                        <tr>
+                            <td>{{ user_profile.tu_username }}</td>
+                            <td>{{ user_profile.full_name }}</td>
+                            <td>{{ user_profile.email }}</td>
+                            <td>
+                                <span class="role-badge {% if user_profile.role == 'lecturer' %}role-lecturer{% else %}role-admin{% endif %}">
+                                    {{ user_profile.get_role_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="{% if user_profile.is_active %}status-active{% else %}status-inactive{% endif %}">
+                                    {% if user_profile.is_active %}✓ ใช้งาน{% else %}✗ ไม่ใช้งาน{% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-links">
+                                    <a href="{% url 'assign_role' user_profile.user.id %}" class="action-btn btn-edit">
+                                        แก้ไขบทบาท
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <p>ไม่พบผู้ใช้งาน</p>
+                <p>ผู้ใช้งานจะปรากฏขึ้นเมื่อเข้าสู่ระบบครั้งแรก</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
