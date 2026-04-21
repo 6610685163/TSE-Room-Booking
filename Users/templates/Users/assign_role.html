@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - ระบบจองห้อง มธ.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --tu-red: #c21e2d;
+            --tu-red-hover: #a01825;
+            --text-main: #374151;
+            --text-muted: #6b7280;
+            --bg-color: #f3f4f6;
+            --border-color: #d1d5db;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+        }
+
+        .navbar {
+            background-color: var(--tu-red);
+            color: white;
+            padding: 1rem 2rem;
+        }
+
+        .navbar h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h2 {
+            color: var(--tu-red);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--tu-red);
+            padding-bottom: 0.5rem;
+        }
+
+        .user-info {
+            background-color: var(--bg-color);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .user-info p {
+            margin: 0.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        .user-info strong {
+            color: var(--tu-red);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .radio-option:hover {
+            background-color: #f9fafb;
+            border-color: var(--tu-red);
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 0.75rem;
+            cursor: pointer;
+        }
+
+        .radio-label {
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .radio-label strong {
+            display: block;
+            color: var(--tu-red);
+            margin-bottom: 0.25rem;
+        }
+
+        .radio-label small {
+            color: var(--text-muted);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-submit {
+            background-color: var(--tu-red);
+            color: white;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--tu-red-hover);
+        }
+
+        .btn-cancel {
+            background-color: var(--border-color);
+            color: var(--text-main);
+        }
+
+        .btn-cancel:hover {
+            background-color: #c4c7ce;
+        }
+
+        .alert {
+            background-color: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            color: #1e40af;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>{{ title }}</h1>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2>กำหนดบทบาทผู้ใช้งาน</h2>
+
+            <div class="alert">
+                กรุณาเลือกบทบาทสำหรับผู้ใช้งานคนนี้
+            </div>
+
+            <div class="user-info">
+                <p><strong>ชื่อผู้ใช้งาน:</strong> {{ target_user.username }}</p>
+                <p><strong>ชื่อจริง:</strong> {{ user_profile.full_name }}</p>
+                <p><strong>อีเมล:</strong> {{ user_profile.email }}</p>
+            </div>
+
+            <form method="POST" action="">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label>บทบาท (Role)</label>
+                    <div class="radio-group">
+                        {% for value, label in form.role.field.choices %}
+                        <label class="radio-option">
+                            <input type="radio" name="role" value="{{ value }}" 
+                                {% if form.role.value == value %}checked{% endif %}>
+                            <span class="radio-label">
+                                <strong>
+                                    {% if value == 'lecturer' %}
+                                    อาจารย์ (Lecturer)
+                                    {% else %}
+                                    เจ้าหน้าที่ (Admin)
+                                    {% endif %}
+                                </strong>
+                                <small>
+                                    {% if value == 'lecturer' %}
+                                    สามารถจองห้องและดูปฏิทินได้
+                                    {% else %}
+                                    มีสิทธิ์อนุมัติการจอง จัดการผู้ใช้ และดูรายงาน
+                                    {% endif %}
+                                </small>
+                            </span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn btn-submit">บันทึกการเปลี่ยนแปลง</button>
+                    <a href="{% url 'dashboard' %}" class="btn btn-cancel" style="text-decoration: none; text-align: center;">ยกเลิก</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
