@@ -397,6 +397,146 @@
             border: 1px solid #e2e8f0;
             font-size: 0.9rem;
         }
+
+        /* ----- สไตล์สำหรับ Popup Modal ----- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn-option {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-family: inherit;
+        }
+
+        .btn-option:hover {
+            border-color: var(--tu-red);
+            background: #fff5f5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 0, 0, 0.08);
+        }
+
+        .btn-option strong {
+            font-size: 1.15rem;
+            color: var(--tu-red);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-option small {
+            color: #64748b;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .btn-close-modal {
+            margin-top: 20px;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-family: inherit;
+            width: 100%;
+            padding: 10px;
+            transition: 0.2s;
+        }
+
+        .btn-close-modal:hover {
+            color: #334155;
+            text-decoration: underline;
+        }
+
+        /* ----- สไตล์สำหรับ Checkbox แบบปุ่มกด (Minimal) ----- */
+        .custom-checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 10px;
+        }
+
+        .time-grid {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        }
+
+        .check-box-btn {
+            display: block;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .check-box-btn input {
+            display: none;
+        }
+
+        .check-box-btn span {
+            display: block;
+            border: 1.5px solid #e2e8f0;
+            padding: 12px 10px;
+            border-radius: 12px;
+            text-align: center;
+            transition: 0.2s;
+            color: #64748b;
+            font-weight: 500;
+            background: white;
+        }
+
+        .check-box-btn:hover span {
+            border-color: #cbd5e1;
+        }
+
+        .check-box-btn input:checked+span {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            color: #1e3a8a;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
     </style>
 </head>
 
@@ -417,45 +557,36 @@
             <div id="s1" class="step active">1. เลือกห้อง</div>
             <div id="s2" class="step">2. ตารางรายเดือน</div>
             <div id="s3" class="step">3. ข้อมูลการจอง</div>
+            <div id="s4" class="step hidden" style="display: none;">2. จองทั้งเทอม</div>
         </div>
 
         <div id="view1" class="room-grid">
-            <div class="card" onclick="showStep(2, 'ENG 406-3(ห้องประชุม 1)')">
-                <div class="room-img-placeholder">
-                    <img src="{% static 'images/test_room.jpg' %}" alt="test">
-                </div>
+            <div class="card" onclick="openBookingModal('ENG 406-3(ห้องประชุม 1)')">
+                <div class="room-img-placeholder"><img src="{% static 'images/test_room.jpg' %}" alt="test"></div>
                 <div class="card-title">ENG 406-3(ห้องประชุม 1)</div>
                 <p>ความจุ: 60 คน | ห้องประชุม</p>
                 <small style="color: var(--yellow);"><i class="fa-solid fa-circle-exclamation"></i> จองหนาแน่น</small>
             </div>
-            <div class="card" onclick="showStep(2, 'ENG 406-5(ห้องประชุม 2)')">
-                <div class="room-img-placeholder">
-                    <img src="{% static 'images/test_room.jpg' %}" alt="test">
-                </div>
+            <div class="card" onclick="openBookingModal('ENG 406-5(ห้องประชุม 2)')">
+                <div class="room-img-placeholder"><img src="{% static 'images/test_room.jpg' %}" alt="test"></div>
                 <div class="card-title">ENG 406-5(ห้องประชุม 2)</div>
                 <p>ความจุ: 15 คน | ห้องประชุม</p>
                 <small style="color: var(--yellow);"><i class="fa-solid fa-circle-exclamation"></i> จองหนาแน่น</small>
             </div>
-            <div class="card" onclick="showStep(2, 'ENG 408-1(ห้องประชุม 3)')">
-                <div class="room-img-placeholder">
-                    <img src="{% static 'images/test_room.jpg' %}" alt="test">
-                </div>
+            <div class="card" onclick="openBookingModal('ENG 408-1(ห้องประชุม 3)')">
+                <div class="room-img-placeholder"><img src="{% static 'images/test_room.jpg' %}" alt="test"></div>
                 <div class="card-title">ENG 408-1(ห้องประชุม 3)</div>
                 <p>ความจุ: 10 คน | ห้องประชุม</p>
                 <small style="color: var(--yellow);"><i class="fa-solid fa-circle-exclamation"></i> จองหนาแน่น</small>
             </div>
-            <div class="card" onclick="showStep(2, 'ENG 408-2/1(ห้องบรรยาย 1)')">
-                <div class="room-img-placeholder">
-                    <img src="{% static 'images/test_room.jpg' %}" alt="test">
-                </div>
+            <div class="card" onclick="openBookingModal('ENG 408-2/1(ห้องบรรยาย 1)')">
+                <div class="room-img-placeholder"><img src="{% static 'images/test_room.jpg' %}" alt="test"></div>
                 <div class="card-title">ENG 408-2/1(ห้องบรรยาย 1)</div>
                 <p>ความจุ: 20 คน | ห้องเรียน</p>
                 <small style="color: var(--yellow);"><i class="fa-solid fa-circle-exclamation"></i> จองหนาแน่น</small>
             </div>
-            <div class="card" onclick="showStep(2, 'ENG 408-2/2(ห้องบรรยาย 2)')">
-                <div class="room-img-placeholder">
-                    <img src="{% static 'images/test_room.jpg' %}" alt="test">
-                </div>
+            <div class="card" onclick="openBookingModal('ENG 408-2/2(ห้องบรรยาย 2)')">
+                <div class="room-img-placeholder"><img src="{% static 'images/test_room.jpg' %}" alt="test"></div>
                 <div class="card-title">ENG 408-2/2(ห้องบรรยาย 2)</div>
                 <p>ความจุ: 20 คน | ห้องเรียน</p>
                 <small style="color: var(--yellow);"><i class="fa-solid fa-circle-exclamation"></i> จองหนาแน่น</small>
@@ -523,6 +654,100 @@
                         onclick="alert('ส่งคำขอเรียบร้อยแล้ว!'); window.location.href='{% url 'dashboard' %}'; return false;">ส่งคำขอจองห้อง</button>
                 </form>
             </div>
+        </div>
+    </div>
+
+    <div id="view4" class="hidden" style="display: none;">
+        <div class="form-box" style="max-width: 800px;">
+            <h2 style="color:var(--tu-red); margin-top:0;">รายละเอียดการจองทั้งเทอม</h2>
+            <button onclick="showStep(1)"
+                style="border:none; background:none; cursor:pointer; color:var(--tu-red); margin-bottom: 20px; font-family: inherit;">
+                <i class="fa-solid fa-chevron-left"></i> ยกเลิกและกลับไปหน้าแรก
+            </button>
+
+            <div class="summary-card"
+                style="background:#eff6ff; border: 1px solid #bfdbfe; padding:18px; border-radius:12px; margin-bottom: 25px; color: #1e3a8a;">
+                <div style="font-size: 1.1rem;"><strong><i class="fa-solid fa-location-dot"></i>
+                        ห้องที่เลือกจองประจำ:</strong> <span id="semesterRoomName"></span></div>
+            </div>
+
+            <form method="POST" action="">
+                {% csrf_token %}
+                <input type="hidden" name="room_name" id="semester_input_room_name">
+                <input type="hidden" name="booking_type" value="semester">
+
+                <div class="form-group" style="margin-bottom: 30px;">
+                    <label>รหัสวิชา / วัตถุประสงค์การใช้งาน <span style="color:red">*</span></label>
+                    <input type="text" name="purpose" placeholder="เช่น CN311 หรือ ติวสอบประจำสัปดาห์" required>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 30px;">
+                    <label>เลือกวันในสัปดาห์ที่ต้องการใช้งาน <span style="color:red">*</span></label>
+                    <div class="custom-checkbox-grid">
+                        <label class="check-box-btn"><input type="checkbox" name="days"
+                                value="จันทร์"><span>จันทร์</span></label>
+                        <label class="check-box-btn"><input type="checkbox" name="days"
+                                value="อังคาร"><span>อังคาร</span></label>
+                        <label class="check-box-btn"><input type="checkbox" name="days"
+                                value="พุธ"><span>พุธ</span></label>
+                        <label class="check-box-btn"><input type="checkbox" name="days"
+                                value="พฤหัสบดี"><span>พฤหัสบดี</span></label>
+                        <label class="check-box-btn"><input type="checkbox" name="days"
+                                value="ศุกร์"><span>ศุกร์</span></label>
+                        <label class="check-box-btn"><input type="checkbox" name="days"
+                                value="เสาร์"><span>เสาร์</span></label>
+                        <label class="check-box-btn"><input type="checkbox" name="days"
+                                value="อาทิตย์"><span>อาทิตย์</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 30px;">
+                    <label>เลือกช่วงเวลา (เลือกได้หลายช่วง) <span style="color:red">*</span></label>
+                    <div class="custom-checkbox-grid time-grid">
+                        <label class="check-box-btn"><input type="checkbox" name="times"
+                                value="08:00 - 09:30"><span>08:00 - 09:30</span></label>
+                        <label class="check-box-btn"><input type="checkbox" name="times"
+                                value="09:30 - 11:00"><span>09:30 - 11:00</span></label>
+                        <label class="check-box-btn"><input type="checkbox" name="times"
+                                value="11:00 - 12:30"><span>11:00 - 12:30</span></label>
+                        <label class="check-box-btn"><input type="checkbox" name="times"
+                                value="13:30 - 15:00"><span>13:30 - 15:00</span></label>
+                        <label class="check-box-btn"><input type="checkbox" name="times"
+                                value="15:00 - 16:30"><span>15:00 - 16:30</span></label>
+                        <label class="check-box-btn"><input type="checkbox" name="times"
+                                value="16:30 - 18:00"><span>16:30 - 18:00</span></label>
+                    </div>
+                </div>
+
+                <div style="text-align: right;">
+                    <button type="submit" class="btn-submit"
+                        style="width: auto; padding: 15px 40px; border-radius: 50px;"
+                        onclick="alert('ส่งคำขอจองห้องแบบทั้งเทอมเรียบร้อยแล้ว!'); window.location.href='{% url 'dashboard' %}'; return false;">
+                        ส่งคำขอจองแบบทั้งเทอม <i class="fa-solid fa-paper-plane" style="margin-left: 8px;"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="bookingTypeModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 style="color: var(--tu-red); margin-top: 0; margin-bottom: 10px;">รูปแบบการจองห้อง</h2>
+            <p style="color: #64748b; margin-bottom: 20px;">ห้อง: <strong style="color:#1e293b;"
+                    id="modalRoomName"></strong></p>
+
+            <div class="modal-buttons">
+                <button class="btn-option" onclick="selectBookingType('semester')">
+                    <strong><i class="fa-solid fa-calendar-week"></i> จองแบบทั้งเทอม</strong>
+                    <small>เลือกวันและเวลาที่ต้องใช้สอนหรือติวซ้ำทุกสัปดาห์ จนจบภาคการศึกษา</small>
+                </button>
+                <button class="btn-option" onclick="selectBookingType('daily')">
+                    <strong><i class="fa-solid fa-calendar-day"></i> จองแบบรายวัน</strong>
+                    <small>เลือกวันที่จากปฏิทิน และกำหนดช่วงเวลาด้วยตัวเองอย่างอิสระ</small>
+                </button>
+            </div>
+
+            <button class="btn-close-modal" onclick="closeModal()">ย้อนกลับ</button>
         </div>
     </div>
 
@@ -672,36 +897,77 @@
             showStep(3, selectedTimeSlots);
         }
 
+        let pendingRoom = "";
+
+        // ฟังก์ชันเปิด Popup
+        function openBookingModal(roomName) {
+            pendingRoom = roomName;
+            document.getElementById('modalRoomName').innerText = roomName;
+            const modal = document.getElementById('bookingTypeModal');
+            modal.style.display = 'flex';
+            // setTimeout ช่วยเรื่อง Animation เฟดเข้าให้สวยงาม
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+
+        // ฟังก์ชันปิด Popup
+        function closeModal() {
+            const modal = document.getElementById('bookingTypeModal');
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+
+        // ฟังก์ชันประมวลผลการกดปุ่มจาก Popup
+        function selectBookingType(type) {
+            closeModal();
+            if (type === 'daily') {
+                showStep(2, pendingRoom);
+            } else if (type === 'semester') {
+                showStep(4, pendingRoom);
+            }
+        }
+
         function showStep(step, data) {
-            // 1. ซ่อนทุกหน้าก่อน
+            // ซ่อนทุกหน้า
             document.getElementById('view1').style.display = 'none';
             document.getElementById('view2').style.display = 'none';
             document.getElementById('view3').style.display = 'none';
+            document.getElementById('view4').style.display = 'none';
 
+            // ล้างแถบสถานะทั้งหมด
             document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
 
-            // 2. แสดงหน้าที่ต้องการ
             const targetView = document.getElementById('view' + step);
             if (targetView) {
-                // ถ้าเป็นหน้า 1 (เลือกห้อง) ให้แสดงผลแบบ grid เพื่อรักษา Layout เดิม
-                if (step === 1) {
-                    targetView.style.display = 'grid';
-                } else {
-                    targetView.style.display = 'block';
-                }
+                if (step === 1) targetView.style.display = 'grid'; // คืนค่า Grid ให้หน้าเลือกห้อง
+                else targetView.style.display = 'block';
             }
 
             const targetStep = document.getElementById('s' + step);
             if (targetStep) targetStep.classList.add('active');
 
-            // ส่วนจัดการข้อมูลแต่ละ Step
+            // จัดการซ่อน/โชว์แถบสถานะ Breadcrumb ให้สัมพันธ์กับ Flow ที่เลือก
             if (step === 1) {
-                // ล้างค่าที่เคยเลือกไว้หากย้อนกลับมาหน้าแรก (ถ้าต้องการ)
-                // selectedDates = []; 
-                // selectedTimeSlots = [];
+                document.getElementById('s2').style.display = 'block';
+                document.getElementById('s3').style.display = 'block';
+                document.getElementById('s4').style.display = 'none';
+            } else if (step === 4) { // Flow จองเทอม
+                document.getElementById('s2').style.display = 'none';
+                document.getElementById('s3').style.display = 'none';
+                document.getElementById('s4').style.display = 'block';
+                document.getElementById('s4').classList.add('active');
+            } else if (step === 2 || step === 3) { // Flow จองรายวัน
+                document.getElementById('s2').style.display = 'block';
+                document.getElementById('s3').style.display = 'block';
+                document.getElementById('s4').style.display = 'none';
             }
-            if (step === 2) {
+
+            // รับค่าห้อง
+            if (step === 2 || step === 4) {
                 if (typeof data === 'string' && data.includes('ENG')) { currentRoom = data; }
+            }
+
+            // ประมวลผลก่อนเข้าหน้าต่างๆ
+            if (step === 2) {
                 document.getElementById('room-header').innerText = currentRoom;
                 renderCalendar();
             }
@@ -715,9 +981,11 @@
                 document.getElementById('input_room_name').value = currentRoom;
                 document.getElementById('input_selected_data').value = JSON.stringify(data);
             }
+            if (step === 4) {
+                document.getElementById('semesterRoomName').innerText = currentRoom;
+                document.getElementById('semester_input_room_name').value = currentRoom;
+            }
         }
-
-        initCalendarSelects();
     </script>
 </body>
 
